@@ -19,70 +19,110 @@ namespace Payroll
     ┴  ┴ ┴ ┴ ┴└─└─┘┴─┘┴─┘  └─┘ ┴ └─┘ ┴ └─┘┴ ┴
     ");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\t1 - Employee's data\n \t2 - Wage calculator\n \t3 - Salary expenses\n \t4 - Add employee\n \t5 - Exit Application");
+            Console.WriteLine("\t1 - Employee's data\n \t2 - Payroll List\n \t3 - Print Paycheck\n \t4 - Salary expenses\n \t5 - Add employee\n \t6 - Exit Application\n");
 
             while (true)
             {
                 switch (Console.ReadLine())
                 {
                     case "1":
-                        Wage();
+                        List();
                         break;
                     case "2":
-                        Calculator();
+                        PayrollList();
                         break;
                     case "3":
-                        Expenses();
+                        Print();
                         break;
                     case "4":
-                        Add();
+                        Expenses();
                         break;
                     case "5":
+                        Add();
+                        break;
+                    case "6":
                         Environment.Exit(0);
                         break;
                 }
             }
 
-            static void Wage()
+            static void List()
             {
-                Console.WriteLine("Write employee's name");
-                List<Payroll> wage = new List<Payroll>();
-                XmlSerializer xml = new XmlSerializer(typeof(List<Payroll>));
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("Employee's Database");
+
+                List<Workers> worker = new List<Workers>();
+                XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
                 using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
-                wage = (List<Payroll>)xml.Deserialize(load);
-                
-                foreach (var pay in wage)
+                worker = (List<Workers>)xml.Deserialize(load);
+                foreach (var pay in worker)
                 {
-                    double hrate = Convert.ToDouble(pay.HourRate);
-                    double hworked = Convert.ToDouble(pay.WorkedHours);
-                    double gpay = hrate * hworked;
-                    pay.GrossPay = gpay;
-
-                    double tax1 = pay.GrossPay * pay.Taxes;
-                    double npay = tax1 - pay.GrossPay;
-                    pay.NetPay = npay;
-
-                    Console.WriteLine("Pay" + pay.Lastname + pay.Profession + pay.WorkedHours + pay.HourRate + pay.GrossPay + pay.NetPay);
-                };
+                    Console.ForegroundColor = ConsoleColor.White;
+                    pay.List();
+                }
+                Return();
             }
 
-            static void Calculator()
+            static void PayrollList()
             {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("\t\tPAYROLL LIST\n");
 
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("ID\tFirst Name\tHour Rate\tWorked Hours\tGross Pay\tNet Pay ");
+                Console.WriteLine("......................................................................................");
+
+                List<Workers> worker = new List<Workers>();
+                XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
+                using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
+                worker = (List<Workers>)xml.Deserialize(load);
+                foreach (var w in worker)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    w.Payroll();
+                }
+                Return();
+            }
+
+            static void Print()
+            {
+                Console.WriteLine("Write the employee's ID number you'd like to print");
+                var id = Console.ReadLine();
+
+                List<Paycheck> workers = new List<Paycheck>();
+                XmlSerializer xml = new XmlSerializer(typeof(List<Paycheck>));
+                using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
+                    workers = (List<Paycheck>)xml.Deserialize(load); // fix the 
+
+                foreach (var w in workers)
+                {
+                    w.Printing();
+                    string fileName = @"Payslip.txt";
+                    StreamWriter writer = new StreamWriter(fileName);
+                }
             }
 
             static void Expenses()
             {
+                List<Workers> expenses = new List<Workers>();
+                XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
+                using (FileStream load = File.Open(@"Employees.xml", FileMode.Open))
+                    expenses = (List<Workers>)xml.Deserialize(load);
 
+                foreach (var w in expenses)
+                {
+                    
+                }
             }
-
             static void Add()
             {       
                 Console.Clear();
                 List<Workers> workerData = new List<Workers>();
-                /*XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
-                using (FileStream load = File.Open(@"Worker.xml", FileMode.Open))
-                workerData = (List<Workers>)xml.Deserialize(load);*/
+                XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
+                using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
+                workerData = (List<Workers>)xml.Deserialize(load);
 
                 Workers worker = new Workers();
                 Console.Write("Enter worker ID:");
@@ -113,14 +153,13 @@ namespace Payroll
         }
         public static void Return()
         {
-            Console.WriteLine("Press enter to return to main menu...");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n\n\tPress enter to return to main menu...");
             ConsoleKeyInfo keyPressed = Console.ReadKey();
             if (keyPressed.Key == ConsoleKey.Enter)
-            {
+            {   
                 Start();
             }
-
         }
-        
     }
 }

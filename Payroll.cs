@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Payroll
-{
+{   
     [Serializable]
     public class Workers
     {
@@ -30,11 +30,8 @@ namespace Payroll
             { pesel = value; }
         }
         [XmlElement("WorkedHours")]
-        public string WorkedHours; 
-    }
-    [Serializable]
-    public class Payroll : Workers
-    {
+        public string WorkedHours;
+
         protected double grossPay;
         public double GrossPay
         {
@@ -47,17 +44,43 @@ namespace Payroll
             get { return netPay; }
             set { netPay = value; }
         }
-
         protected double taxes = 0.35;
         public double Taxes
         {
             get { return taxes; }
             set { taxes = value; }
         }
+
+        public void List()
+        {
+            Console.WriteLine("Employee ID: "+ ID + "\tFirst Name: "+ Firstname+"\tLast Name: "+Lastname+"\tPESEL: "+Pesel+"\t Profession: "+Profession);
+        }
+        public void Payroll()
+        {
+            double hrate = Convert.ToDouble(HourRate);
+            double hworked = Convert.ToDouble(WorkedHours);
+            double gpay = hrate * hworked;
+            GrossPay = gpay;
+
+            double tax1 = GrossPay * Taxes;
+            double npay = GrossPay - tax1;
+            NetPay = npay;
+
+            Console.WriteLine(ID+"\t"+Firstname+"\t\t"+HourRate+"zl"+"\t\t"+WorkedHours+"\t\t"+GrossPay+"\t\t"+NetPay);
+        }
     }
+  
     [Serializable]
-    public class Paycheck : Payroll
+    public class Paycheck : Workers
     {
         protected double TotalPay { get; set; }
+        public double Check
+        {   get { return GrossPay; }
+            set { GrossPay = value; }
+        }
+        public void Printing()
+        {
+            Console.WriteLine(Firstname, Check);
+        }
     }
 }
