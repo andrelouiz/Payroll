@@ -56,6 +56,7 @@ namespace Payroll
                 XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
                 using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
                 worker = (List<Workers>)xml.Deserialize(load);
+
                 foreach (var pay in worker)
                 {
                     Console.ForegroundColor = ConsoleColor.White;
@@ -71,38 +72,69 @@ namespace Payroll
                 Console.WriteLine("\t\tPAYROLL LIST\n");
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("ID\tFull Name\t\tWorked Hours\tOvertime\tHour Rate\tOvertime Rate\tOvertime Pay\tGross Pay\tNet Pay ");
-                Console.WriteLine("........................................................................................................................................");
+                Console.WriteLine("ID\tFull Name\t\tWorked Hours\tOvertime\tOvertime Pay\tGross Pay\tNet Pay ");
+                Console.WriteLine("..............................................................................................................");
 
                 List<Workers> worker = new List<Workers>();
                 XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
                 using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
-                worker = (List<Workers>)xml.Deserialize(load);
+                    worker = (List<Workers>)xml.Deserialize(load);
+      
+
+
                 foreach (var w in worker)
                 {
                     Console.ForegroundColor = ConsoleColor.White;
-                    w.Payroll();
+                    Console.WriteLine(w.ID + "\t" + w.Name + "\t \t " + w.WorkedHours + "\t \t " + w.OvertimeHours + "\t \t " + w.OvertimePay + "\t \t " + w.GrossPay + "\t\t" + w.NetPay);
                 }
+
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Workers>));
+                StreamWriter sw = new StreamWriter("Workers.xml");
+                xmlSerializer.Serialize(sw, worker);
+                sw.Close();
+
                 Return();
             }
 
             static void Print()
             {
+                Console.Clear();
                 Console.WriteLine("Write the employee's ID number you'd like to print");
-                var id = Console.ReadLine();
-
-                List<Paycheck> workers = new List<Paycheck>();
-                XmlSerializer xml = new XmlSerializer(typeof(List<Paycheck>));
+                string id = Console.ReadLine();
+                Console.Clear();
+                List<Workers> workers = new List<Workers>();
+                XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
                 using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
-                    workers = (List<Paycheck>)xml.Deserialize(load); // fix the 
-
+                workers = (List<Workers>)xml.Deserialize(load);
+                
                 foreach (var w in workers)
                 {
-                    w.Printing();
-                    string fileName = @"Payslip.txt";
-                    StreamWriter writer = new StreamWriter(fileName);
+                    if (id.Equals(w.ID))
+                    {
+                        using (var writer = new StreamWriter(@"Payslip.txt")) //NOT WORKING
+                        {
+                            Console.WriteLine("...............................................");
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("----- * PAYCHECK - BRIARCLIFF HOSPITAL * -----");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine("...............................................");
+                            Console.WriteLine(" Full Name: " + w.Name + "\n Employee ID:" + w.ID + "\n Profession: "+ w.Profession);
+                            Console.WriteLine("...............................................");
+                            Console.WriteLine(" Base Hours: " + w.WorkedHours + "\n Base Hourly Pay: " + w.HourRate + "zl" + "\n Overtime Hours: " + w.OvertimeHours + "\n Overtime Pay Hourly: " + w.OTHourly + "zl" + "\n Overtime total: " + w.OvertimePay + "zl");
+                            Console.WriteLine("................................................");
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\t\t\tGross Total: " + w.GrossPay + "zl");
+                            Console.WriteLine("\t\t\tDeductions: " + w.Deductions + "zl");
+                            Console.WriteLine("\t\t\tNet Pay: " + w.NetPay + "zl");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine("................................................");
+                        }
+                    }
                 }
+
+                Return();
             }
+        
 
             static void Expenses()
             {
@@ -110,7 +142,6 @@ namespace Payroll
                 XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
                 using (FileStream load = File.Open(@"Employees.xml", FileMode.Open))
                     expenses = (List<Workers>)xml.Deserialize(load);
-
                 foreach (var w in expenses)
                 {
                     
@@ -120,9 +151,9 @@ namespace Payroll
             {       
                 Console.Clear();
                 List<Workers> workerData = new List<Workers>();
-                /*XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
+                XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
                 using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
-                workerData = (List<Workers>)xml.Deserialize(load);*/
+                workerData = (List<Workers>)xml.Deserialize(load);
 
                 Workers worker = new Workers();
                 Console.Write("Enter worker ID:");

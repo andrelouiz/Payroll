@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Payroll
-{   
+{
     [Serializable]
     public class Workers
     {
@@ -20,17 +20,15 @@ namespace Payroll
         public string HourRate { get; set; }
         protected string pesel;
         [XmlElement("Pesel")]
-        public string Pesel 
+        public string Pesel
         {
             get
-            { return pesel;  }
+            { return pesel; }
             set
             { pesel = value; }
         }
-        [XmlElement("WorkedHours")]
         public string WorkedHours { get; set; }
         public string OvertimeHours { get; set; }
-        
         protected double grossPay;
         public double GrossPay
         {
@@ -51,10 +49,12 @@ namespace Payroll
         }
         public double OvertimePay { get; set; }
         public double OTHourly { get; set; }
+        public double Deductions { get; set; }
         public void List()
         {
             Console.WriteLine("Employee ID: " + ID + "\tName: " + Name + "\tPESEL: " + Pesel + "\t Profession: " + Profession);
         }
+      
         public void Payroll()
         {
             double hourRate = Convert.ToDouble(HourRate);
@@ -69,31 +69,48 @@ namespace Payroll
 
             double fedTaxes = GrossPay * Taxes;
             double netPay = GrossPay - fedTaxes;
-            
-           
+
             NetPay = netPay;
             OvertimePay = otTotal;
             OTHourly = otPay;
+            Deductions = fedTaxes;
 
-            Console.WriteLine(ID+"\t"+Name +"\t \t "+WorkedHours+"\t \t "+OvertimeHours+"\t \t "+HourRate+"zl"+"\t \t "+OTHourly+"zl"+ "\t\t "+OvertimePay+"zl"+"\t \t "+GrossPay +"\t\t"+NetPay);
         }
     }
+
+
     public class Pay : Workers
     {
-     
-    }
+        public void Payroll1()
+        {
+            double hourRate = Convert.ToDouble(HourRate);
+            double hourWorked = Convert.ToDouble(WorkedHours);
+            double otHours = Convert.ToDouble(OvertimeHours);
 
+            double otPay = hourRate * 1.5;
+            double otTotal = otPay * otHours;
+
+            double grossPay = (hourRate * hourWorked) + otTotal;
+            GrossPay = grossPay;
+
+            double fedTaxes = GrossPay * Taxes;
+            double netPay = GrossPay - fedTaxes;
+
+            NetPay = netPay;
+            OvertimePay = otTotal;
+            OTHourly = otPay;
+            Deductions = fedTaxes;
+
+        }
+    }
     [Serializable]
-    public class Paycheck : Workers
+    public class PaySlip : Workers
     {
         protected double TotalPay { get; set; }
         public double Check
         {   get { return GrossPay; }
             set { GrossPay = value; }
         }
-        public void Printing()
-        {
-            Console.WriteLine(Name, Check);
-        }
+   
     }
 }
