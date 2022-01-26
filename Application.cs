@@ -131,14 +131,30 @@ namespace Payroll
         
             static void Expenses()
             {
-                List<Pay> expenses = new List<Pay>();
+                Console.Clear();
+                List<Pay> payment = new List<Pay>();
                 XmlSerializer xml = new XmlSerializer(typeof(List<Pay>));
-                using (FileStream load = File.Open(@"Employees.xml", FileMode.Open))
-                    expenses = (List<Pay>)xml.Deserialize(load);
-                foreach (var w in expenses)
+                using (FileStream load = File.Open(@"Pay.xml", FileMode.Open))
+                    payment = (List<Pay>)xml.Deserialize(load);
+                Console.WriteLine("....................................................");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("\t\t SALARY EXPENSES ");
+                Console.WriteLine("....................................................");
+
+                foreach (var p in payment)
                 {
-                    
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" Employee ID Number: " + p.ID + "\tGross Pay: " + p.GrossPay +"zl");
                 }
+
+                var doc = XDocument.Load("Pay.xml");
+                var sum = (from pay in doc.Descendants("GrossPay")
+                           select double.Parse(pay.Value)).Sum();
+
+                Console.WriteLine("\n\n\tTotal sum of the salary expenses:  {0}zl", sum);
+                Console.WriteLine("....................................................");
+                Console.ReadKey();
+                Return();
             }
             static void Add()
             {       
@@ -171,7 +187,6 @@ namespace Payroll
                 xmlSerializer.Serialize(sw, workerData);
                 sw.Close();
 
-                
                 Pay pay = new Pay();
                 Console.Write("Hour Rate: ");
                 pay.HourRate = Console.ReadLine();
@@ -182,15 +197,12 @@ namespace Payroll
                 pay.Name = name; pay.ID = ID; pay.Pesel = pesel; pay.Profession = prof;
                 payData.Add(pay);
 
-               
-
                 XmlSerializer XmlSerializer = new XmlSerializer(typeof(List<Pay>));
                 StreamWriter SW = new StreamWriter("Pay.xml");
                 XmlSerializer.Serialize(SW, payData);
                 SW.Close();
 
-                Console.WriteLine("Employee added sucessfully");
-
+                Console.WriteLine("Employee added sucessfully\n");
                 Return();
             }
         }

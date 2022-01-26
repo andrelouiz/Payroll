@@ -84,6 +84,9 @@ namespace Payroll
     public class PaySlip : Pay
     {
         public double TotalExpense { get; set; }
+        public void SalaryExpense()
+        {
 
+        }
     }
 }
