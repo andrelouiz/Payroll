@@ -71,8 +71,8 @@ namespace Payroll
                 Console.WriteLine("\t\tPAYROLL LIST\n");
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("ID\tFirst Name\tHour Rate\tWorked Hours\tGross Pay\tNet Pay ");
-                Console.WriteLine("......................................................................................");
+                Console.WriteLine("ID\tFull Name\t\tWorked Hours\tOvertime\tHour Rate\tOvertime Rate\tOvertime Pay\tGross Pay\tNet Pay ");
+                Console.WriteLine("........................................................................................................................................");
 
                 List<Workers> worker = new List<Workers>();
                 XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
@@ -120,32 +120,32 @@ namespace Payroll
             {       
                 Console.Clear();
                 List<Workers> workerData = new List<Workers>();
-                XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
+                /*XmlSerializer xml = new XmlSerializer(typeof(List<Workers>));
                 using (FileStream load = File.Open(@"Workers.xml", FileMode.Open))
-                workerData = (List<Workers>)xml.Deserialize(load);
+                workerData = (List<Workers>)xml.Deserialize(load);*/
 
                 Workers worker = new Workers();
                 Console.Write("Enter worker ID:");
                 worker.ID = Console.ReadLine();
-                Console.Write("First Name: ");
-                worker.Firstname = Console.ReadLine();
-                Console.Write("Last Name: ");
-                worker.Lastname = Console.ReadLine();
+                Console.Write("Name: ");
+                worker.Name = Console.ReadLine();
                 Console.Write("Pesel Number:");
                 worker.Pesel = Console.ReadLine();
                 Console.Write("Profession: ");
                 worker.Profession = Console.ReadLine();
                 Console.Write("Hour Rate: ");
                 worker.HourRate = Console.ReadLine();
-                Console.Write("Hours worked month: ");
+                Console.Write("Hours worked this month: ");
                 worker.WorkedHours = Console.ReadLine();
-                
+                Console.Write("Overtime worked this month: ");
+                worker.OvertimeHours = Console.ReadLine();
                 workerData.Add(worker);
 
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<Workers>));
                 StreamWriter sw = new StreamWriter("Workers.xml");
                 xmlSerializer.Serialize(sw, workerData);
                 sw.Close();
+            
                 Console.WriteLine("Employee added sucessfully");
 
                 Return();
